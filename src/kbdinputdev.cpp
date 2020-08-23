@@ -9,7 +9,7 @@
 
 KbdInputDev::KbdInputDev(Router& rt, char const* const devName) : EvDev(rt) {
     fd = ::open(devUinput, O_WRONLY | O_NONBLOCK);
-    throwIf(fd < 0, StringException("check /dev/uinput"));
+    throwIf(fd < 0, StringException("check /dev/uinput for keyboard"));
 
     throwIf(0 > ::ioctl(fd, UI_SET_EVBIT, EV_SYN), StringException(std::string("EV_KEY")));
     throwIf(0 > ::ioctl(fd, UI_SET_EVBIT, EV_KEY), StringException(std::string("EV_KEY")));

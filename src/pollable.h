@@ -16,6 +16,8 @@ private:
         return fd;
     }
 protected:
+    virtual void tryConnect(Switch &sw) {};
+protected:
     int fd = -1;
     std::mutex lock;
 };

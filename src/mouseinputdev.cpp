@@ -9,7 +9,7 @@
 
 MouseInputDev::MouseInputDev(Router& rt, char const* const devName) : EvDev(rt) {
     fd = ::open(devUinput, O_WRONLY | O_NONBLOCK);
-    throwIf(fd < 0, StringException("check /dev/uinput"));
+    throwIf(fd < 0, StringException("check /dev/uinput for mouse"));
 
     throwIf(0 > ::fcntl(fd, F_SETFL, O_NONBLOCK), StringException(std::string("I cannot handle blocking IO on ") + devName));
     throwIf(0 > ::ioctl(fd, UI_SET_EVBIT, EV_SYN), StringException(std::string("EV_KEY")));

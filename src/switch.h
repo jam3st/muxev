@@ -4,7 +4,7 @@
 #include <semaphore.h>
 
 #include <mutex>
-#include <unordered_map>
+#include <map>
 #include <vector>
 #include <atomic>
 #include <memory>
@@ -20,7 +20,10 @@ public:
     void main();
     void add(std::weak_ptr<Pollable> const& io, bool const hasInput = true);
     void remove(std::weak_ptr<Pollable> const& io);
-    //void requestWrite();
+    std::weak_ptr<Pollable> getFromPtr(Pollable const* io);
+    void enableTimer();
+    void timerConnectCheck();
+
 private:
     void signaled();
     void stop();
@@ -32,11 +35,11 @@ private:
     std::atomic_bool running;
     std::vector<Thread*> threads;
     std::deque<epoll_event> events;
-    std::unordered_map<int, std::shared_ptr<Pollable>> pollables;
+    std::multimap<int, std::shared_ptr<Pollable>> pollables;
     std::mutex lock;
     sem_t sem;
     int ePollFd = -1;
-    int mTimerFd = -1;
+    int timerFd = -1;
     static constexpr int MAX_EPOLL_EVENTS = 16;
     unsigned long long uid = 0;
 };

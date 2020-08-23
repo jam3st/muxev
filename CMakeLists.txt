@@ -16,3 +16,5 @@ add_executable(${PROJECT_NAME}
     "src/socket.cpp"
     "src/udpsocket.cpp"
 )
+install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+

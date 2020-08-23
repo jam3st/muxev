@@ -21,7 +21,7 @@ private:
 private:
     void read(Switch& sw) override final;
     void write(Switch& sw) override final;
-    void error(Switch& sw) override final;
+    void error(Switch& sw) override;
 protected:
     Router& rt;
     enum KeyStateValues : signed int {

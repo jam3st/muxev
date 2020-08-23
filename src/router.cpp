@@ -8,27 +8,35 @@
 #include "exception.h"
 
 #include <iostream>
+#include <string>
 
 Router::Router(Switch& sw) : sw(sw) {
 
 }
 
 void Router::init(char const* const inKbdDevName, char const* const inMouseDevName) {
-    inBoard = std::make_shared<EvInputDev>(*this, inKbdDevName);
-    inMouse = std::make_shared<EvInputDev>(*this, inMouseDevName);
-    sw.add(inBoard);
-    sw.add(inMouse);
+    constexpr char NoneString[] = "none";
 
-    for(auto i = 0u; i < NumDisplays; ++i) {
-        outLeds[i] = 0u;
-        outBoards[i] = std::make_shared<KbdInputDev>(*this, ("evmux-kbd-event-" + std::to_string(i)).c_str());
-        outMice[i] = std::make_shared<MouseInputDev>(*this, ("evmux-mouse-event-" + std::to_string(i)).c_str());
-        sw.add(outMice[i], false);
-        sw.add(outBoards[i], false);
+    if(0 != std::string(NoneString).compare(std::string(inKbdDevName))) {
+        inBoard = std::make_shared<EvInputDev>(*this, inKbdDevName);
+        sw.add(inBoard);
+        for(auto i = 0u; i < NumDisplays; ++i) {
+            outLeds[i] = 0u;
+            outBoards[i] = std::make_shared<KbdInputDev>(*this, ("evmux-kbd-event-" + std::to_string(i)).c_str());
+            sw.add(outBoards[i], false);
+        }
     }
-    auto const* keyBoard = dynamic_cast<EvInputDev*>(inBoard.get());
-    auto const ledState = outLeds[activeOutIndex - 1u];
-    keyBoard->setLeds(0u);
+
+    if(0 != std::string(NoneString).compare(std::string(inMouseDevName))) {
+        inMouse = std::make_shared<EvInputDev>(*this, inMouseDevName);
+        fprintf(stderr, "Mosedev %s : %d\n", inMouseDevName, inMouse.get()->fd);
+        sw.add(inMouse);
+        for (auto i = 0u; i < NumDisplays; ++i) {
+            outLeds[i] = 0u;
+            outMice[i] = std::make_shared<MouseInputDev>(*this, ("evmux-mouse-event-" + std::to_string(i)).c_str());
+            sw.add(outMice[i], false);
+        }
+    }
 }
 
 void Router::handleInputEvent(EvDev const* src, struct input_event const ev[], size_t const count) {
