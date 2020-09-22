@@ -1,5 +1,4 @@
 #include <linux/input.h>
-#include <sys/time.h>
 #include <unistd.h>
 #include "evdev.h"
 #include "router.h"
@@ -36,12 +35,7 @@ void EvDev::readAndRoute() {
     }
 }
 
-void EvDev::write(struct input_event ev[], size_t const count) const {
-    struct timeval now;
-     gettimeofday(&now, NULL);
-    for(auto i = 0 ; i < count; ++ i) {
-	ev[i].time = now;
-    }
+void EvDev::write(struct input_event const ev[], size_t const count) const {
     auto const writeSize = count * sizeof(ev[0]);
     auto const nw = ::write(fd, &ev[0], writeSize);
     if(writeSize != nw) {

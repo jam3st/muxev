@@ -29,6 +29,7 @@ void Router::init(char const* const inKbdDevName, char const* const inMouseDevNa
 
     if(0 != std::string(NoneString).compare(std::string(inMouseDevName))) {
         inMouse = std::make_shared<EvInputDev>(*this, inMouseDevName);
+        fprintf(stderr, "Mosedev %s : %d\n", inMouseDevName, inMouse.get()->fd);
         sw.add(inMouse);
         for (auto i = 0u; i < NumDisplays; ++i) {
             outLeds[i] = 0u;
@@ -38,7 +39,7 @@ void Router::init(char const* const inKbdDevName, char const* const inMouseDevNa
     }
 }
 
-void Router::handleInputEvent(EvDev const* src, struct input_event ev[], size_t const count) {
+void Router::handleInputEvent(EvDev const* src, struct input_event const ev[], size_t const count) {
     if(activeOutIndex == 0u) {
         // TODO
     } else {
@@ -52,12 +53,12 @@ void Router::handleInputEvent(EvDev const* src, struct input_event ev[], size_t 
     }
 }
 
-void Router::processMouseInput(struct input_event ev[], size_t const count) {
+void Router::processMouseInput(struct input_event const ev[], size_t const count) {
     auto& ref = outMice[activeOutIndex - 1u];
     ref->write(ev, count);
 }
 
-void Router::processKbdInput(struct input_event ev[], size_t const count) {
+void Router::processKbdInput(struct input_event const ev[], size_t const count) {
     auto& ref = outBoards[activeOutIndex - 1u];
     auto prevActiveOut = activeOutIndex;
     bool ledsChanged = false;

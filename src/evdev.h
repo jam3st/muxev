@@ -17,7 +17,7 @@ public:
 protected:
     void readAndRoute();
 private:
-    void write(struct input_event ev[], size_t const count) const;
+    void write(struct input_event const ev[], size_t const count) const;
 private:
     void read(Switch& sw) override final;
     void write(Switch& sw) override final;
