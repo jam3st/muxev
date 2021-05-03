@@ -96,7 +96,6 @@ void Switch::runThread(Thread &th) {
                     pb->write(*this);
                 }
                 if ((ev.events & (EPOLLIN)) != 0) {
-                    usleep(20);
                     pb->read(*this);
                 }
             }
